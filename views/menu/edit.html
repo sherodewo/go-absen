@@ -1,0 +1,132 @@
+{{define "content"}}
+    <div class="row">
+        <div class="col-lg-12">
+            <!--begin::Portlet-->
+            <div class="kt-portlet">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            Menu Edit
+                        </h3>
+                    </div>
+                </div>
+
+                <!--begin::Form-->
+                <form class="kt-form" method="POST" action="/scorepro/admin/menus/update/{{.data.ID}}">
+                    <input type="hidden" name="csrf" value="{{ getCsrfToken .ctx }}">
+                    <div class="kt-portlet__body">
+                        {{if .flashMessage}}
+                            {{if (eq .flashMessage.Type "error")}}
+                                <div class="alert alert-danger alert-dismissible" role="alert">
+                                    <div class="alert-text">{{.flashMessage.Message}}</div>
+                                    <div class="alert-close">
+                                        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                                    </div>
+                                </div>
+                            {{end}}
+                        {{end}}
+                        <div class="kt-section kt-section--first">
+                            <div class="form-group">
+                                <label>Menu Title:</label>
+                                <input type="text" name="menu_title" class="form-control"
+                                       value="{{.data.MenuTitle}}"
+                                       placeholder="Enter menu title">
+                                <span class="form-text text-muted">Please enter menu title</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Slug:</label>
+                                <input type="text" name="slug" class="form-control"
+                                       value="{{.data.Slug}}"
+                                       placeholder="Enter slug">
+                                <span class="form-text text-muted">Please enter slug</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Url:</label>
+                                <input type="text" id="url" name="url" class="form-control"
+                                       value="{{.data.Url}}"
+                                       placeholder="Enter Url">
+                                <span class="form-text text-muted">Please enter your url</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Icon:</label>
+                                <input class="form-control" type="text" placeholder="Enter icon"
+                                       value="{{.data.Icon}}"
+                                       name="icon">
+                                <span class="form-text text-muted">Please enter icon</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Menu Order:</label>
+                                <input type="number" id="menu_order" name="menu_order" class="form-control"
+                                       value="{{.data.MenuOrder}}"
+                                       placeholder="Enter menu order">
+                                <span class="form-text text-muted">Please enter menu order</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description:</label>
+                                <textarea class="form-control" id="description"
+                                          name="description">{{.data.Description}}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="roles">Role</label>
+                                <select class="form-control select2"
+                                        id="roles"
+                                        name="roles[]"
+                                        multiple="multiple">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__foot">
+                        <div class="kt-form__actions">
+                            <button type="submit" class="btn btn-primary btn-brand btn-pill btn-elevate"
+                                    id="kt_submit_update">Submit
+                            </button>
+                            <a href="/scorepro/admin/menus/list" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+
+                <!--end::Form-->
+            </div>
+
+            <!--end::Portlet-->
+        </div>
+    </div>
+{{end}}
+
+{{define "scripts"}}
+    <script type="text/javascript">
+        var initialPropertyOptions = [];
+        {{range .data.Role}}
+        var initialPropertyOption = {
+            id: {{.ID}},
+            text: {{.RoleName}},
+            selected: true
+        };
+        initialPropertyOptions.push(initialPropertyOption);
+        {{end}}
+
+        $('#roles').select2({
+            placeholder: "Select Role",
+            allowClear: true,
+            multiple: true,
+            ajax: {
+                url: '/scorepro/admin/roles/select2',
+                datatype: 'json',
+                delay: 250,
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.text,
+                                id: item.id
+                            }
+                        })
+                    };
+                }
+            },
+            data: initialPropertyOptions
+        });
+    </script>
+{{end}}

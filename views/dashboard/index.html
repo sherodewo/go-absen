@@ -1,0 +1,170 @@
+{{define "content"}}
+    {{if .flashMessage}}
+        {{if (eq .flashMessage.Type "success")}}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <div class="alert-text">{{.flashMessage.Message}}</div>
+                <div class="alert-close">
+                    <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                </div>
+            </div>
+        {{end}}
+        {{if (eq .flashMessage.Type "error")}}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <div class="alert-text">{{.flashMessage.Message}}</div>
+                <div class="alert-close">
+                    <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                </div>
+            </div>
+        {{end}}
+    {{end}}
+    <div class="kt-portlet kt-portlet--mobile">
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="kt-portlet__head-label">
+                <span class="kt-portlet__head-icon">
+				<i class="kt-font-brand flaticon2-line-chart"></i>
+				</span>
+                <h3 class="kt-portlet__head-title">
+                    Dashboard
+                </h3>
+            </div>
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-wrapper">
+                    <div class="kt-portlet__head-actions">
+                        <div class="dropdown dropdown-inline">
+                            <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="la la-download"></i> Export
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <ul class="kt-nav">
+                                    <li class="kt-nav__section kt-nav__section--first">
+                                        <span class="kt-nav__section-text">Choose an option</span>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="#" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-print"></i>
+                                            <span class="kt-nav__link-text">Print</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="#" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-copy"></i>
+                                            <span class="kt-nav__link-text">Copy</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="#" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-excel-o"></i>
+                                            <span class="kt-nav__link-text">Excel</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="#" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-text-o"></i>
+                                            <span class="kt-nav__link-text">CSV</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="#" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-pdf-o"></i>
+                                            <span class="kt-nav__link-text">PDF</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a href="/scorepro/admin/register/add" class="btn btn-brand btn-elevate btn-icon-sm">
+                            <i class="la la-plus"></i>
+                            New Record
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-portlet__body">
+            {{include "dashboard/table"}}
+        </div>
+    </div>
+{{end}}
+
+{{define "scripts"}}
+    <script type="text/javascript">
+        //Datatable register
+
+        $('#kt_table').DataTable({
+            processing: true,
+            serverSide: true,
+            lengthChange: true,
+            // fixedColumns: true,
+            autoWidth: false,
+            scrollX: true,
+            // scrollY: '50vh',
+            scrollCollapse: true,
+            fixedHeader: {
+                "header": false,
+                "footer": false
+            },
+            ajax: '/scorepro/admin/dashboard/datatable',
+            columns: [
+                {
+                    data: 'id',
+                    name: 'id',
+                    width: '5%',
+                    visible: false,
+                    className: 'center'
+                },
+                {data: 'nik', name: 'nik'},
+                {data: 'name', name: 'name'},
+                {data: 'email', name: 'email'},
+                {data: 'cabang', name: 'cabang'},
+                {data: 'group', name: 'group'},
+                {data: 'tipe', name: 'tipe'},
+                {data: 'status', name: 'status'},
+                {data: 'action', orderable: false, searchable: false, className: 'dt-center'},
+            ],
+        });
+
+        //Delete function datatable
+        function Delete(id) {
+            data = new FormData();
+            data.append('csrf', $('meta[name="csrf-token"]').attr('content'));
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: '/scorepro/admin/register/delete/' + id,
+                        type: 'DELETE',
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        success: function (res) {
+                            Swal.fire(
+                                'Deleted!',
+                                'User has been deleted.',
+                                'success'
+                            );
+                            $('#kt_table').DataTable().ajax.reload();
+                        },
+                        error: function (res) {
+                            Swal.fire({
+                                type: 'warning',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            });
+                        }
+                    })
+                }
+            });
+        }
+
+
+    </script>
+
+{{end}}

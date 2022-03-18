@@ -1,0 +1,40 @@
+{{define "content"}}
+    {{if .flashMessage}}
+        {{if (eq .flashMessage.Type "success")}}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <div class="alert-text">{{.flashMessage.Message}} Welcome {{.data.Name}} </div>
+                <div class="alert-close">
+                    <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                </div>
+            </div>
+        {{end}}
+    {{end}}
+    <p>HOME</p>
+
+        <div class="card">
+            <div class="card-header">
+                Welcome, {{.data.Email}}
+            </div>
+            <div class="card-body">
+                <table>
+                    <tr>
+                        <td>Name</td>
+                        <td>: {{.data.Name}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <script>
+            function setCookie(name,value,days) {
+                var expires = "";
+                if (days) {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (days*24*60*60*1000));
+                    expires = "; expires=" + date.toUTCString();
+                }
+                document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+            }
+
+            setCookie("name", {{.data.Name}},1)
+        </script>
+{{end}}

@@ -1,0 +1,40 @@
+{{define "asside"}}
+
+    <button class="kt-aside-close " id="kt_aside_close_btn"><i class="la la-close"></i></button>
+    <div class="kt-aside  kt-aside--fixed  kt-grid__item kt-grid kt-grid--desktop kt-grid--hor-desktop"
+         id="kt_aside">
+
+        <!-- begin:: Aside Menu -->
+        <div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
+            <div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1">
+                <ul class="kt-menu__nav ">
+                    <li class="kt-menu__item " aria-haspopup="true"><a href="/scorepro/admin/home" class="kt-menu__link "><i class="kt-menu__link-icon flaticon2-architecture-and-city"></i><span class="kt-menu__link-text">Home</span></a></li>
+                    {{range Menu .ctx}}
+                        {{range .Menus}}
+                        <li class="kt-menu__item " aria-haspopup="true"><a href="/scorepro/admin{{.Route}}" class="kt-menu__link "><i class="kt-menu__link-icon {{.IconClass}}"></i><span class="kt-menu__link-text">{{.Name}}</span></a></li>
+                        {{end}}
+                    {{end}}
+
+                    {{range MenuParent .ctx}}
+                    <li class="kt-menu__item  kt-menu__item--submenu"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><i class="kt-menu__link-icon {{.Icon}}"></i><span class="kt-menu__link-text">{{.Name}}</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
+                        {{range .Menus}}
+                        <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
+                            <ul class="kt-menu__subnav">
+                                <li class="kt-menu__item" aria-haspopup="true"><a href="/scorepro/admin{{.Route}}"
+                                                                                  class="kt-menu__link ">
+                                    <i class="kt-menu__link-icon {{.IconClass}}"></i>
+                                    <span class="kt-menu__link-text ">{{.Name}}</span></a>
+                                </li>
+                               </ul>
+                        </div>
+                    {{end}}
+                    </li>
+                    {{end}}
+
+                </ul>
+            </div>
+        </div>
+
+        <!-- end:: Aside Menu -->
+    </div>
+{{end}}

@@ -1,0 +1,492 @@
+{{define "content"}}
+    {{if .flashMessage}}
+        {{if (eq .flashMessage.Type "success")}}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <div class="alert-text">{{.flashMessage.Message}}</div>
+                <div class="alert-close">
+                    <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                </div>
+            </div>
+        {{end}}
+        {{if (eq .flashMessage.Type "error")}}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <div class="alert-text">{{.flashMessage.Message}}</div>
+                <div class="alert-close">
+                    <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                </div>
+            </div>
+        {{end}}
+    {{end}}
+    <div class="kt-portlet kt-portlet--mobile">
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="kt-portlet__head-label">
+                <span class="kt-portlet__head-icon">
+				<i class="kt-font-brand flaticon2-line-chart"></i>
+				</span>
+                <h3 class="kt-portlet__head-title">
+                    Configuration
+                </h3>
+            </div>
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-wrapper">
+                    <div class="kt-portlet__head-actions">
+                        <div class="dropdown dropdown-inline">
+                            <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" hidden>
+                                <i class="la la-download"></i> Export
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <ul class="kt-nav">
+                                    <li class="kt-nav__section kt-nav__section--first">
+                                        <span class="kt-nav__section-text">Choose an option</span>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Print()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-print"></i>
+                                            <span class="kt-nav__link-text">Print</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a  href="javascript:;" onclick="Copy()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-copy"></i>
+                                            <span class="kt-nav__link-text">Copy</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Excel()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-excel-o"></i>
+                                            <span class="kt-nav__link-text">Excel</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Csv()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-text-o"></i>
+                                            <span class="kt-nav__link-text">CSV</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Pdf()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-pdf-o"></i>
+                                            <span class="kt-nav__link-text">PDF</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a style="color:white;" data-toggle="modal" data-target="#add" class="btn btn-brand btn-elevate btn-icon-sm">
+                            <i class="la la-plus"></i>
+                            New Record
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-portlet__body">
+            {{include "config/table"}}
+        </div>
+    </div>
+
+{{/*MODAL ADD*/}}
+    <!--begin::Modal-->
+    <div class="modal fade edit_region_modal" id="add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">ADD CONFIG</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="kt-form" role="form" id="form_add" method="POST" action="/los-cms/admin/config/store">
+                        <input type="hidden" id="token" name="csrf" value="{{ getCsrfToken .ctx }}">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Group Name:</strong>
+                                </div>
+                                <div class="col-9">
+                                    <input type="text" class="form-control required texts" id="group_name" name="group_name" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Key:</strong>
+                                </div>
+                                <div class="col-9">
+                                    <input type="text" class="form-control required texts" name="key" id="key" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Value:</strong>
+                                </div>
+                                <div class="col-9">
+                                    <select class="form-control kt-select2" id="kt_select2_11" name="value" multiple="multiple" required>
+                                    </select>
+                                </div>
+                            </div>
+
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="save" class="btn btn-primary" onClick="submitAddRecord()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--end::Modal-->
+
+    {{/*MODAL EDIT*/}}
+    <!--begin::Modal-->
+    <div class="modal fade edit_region_modal" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">EDIT CONFIG</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="kt-form" role="form" id="form" method="POST" action="/los-cms/admin/config/update">
+                        <input type="hidden" id="token_edit" name="csrf" value="{{ getCsrfToken .ctx }}">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Group Name:</strong>
+                                </div>
+                                <div class="col-9">
+                                    <input type="text" class="form-control required texts" id="id" name="id" hidden>
+                                    <input type="text" class="form-control required texts" id="group_name_edit" name="group_name" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Key:</strong>
+                                </div>
+                                <div class="col-9">
+                                    <input type="text" class="form-control required texts" name="key" id="key_edit" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Value:</strong>
+                                </div>
+                                <div class="col-9">
+                                    <select class="form-control kt-select2" id="select_value" name="value" multiple="multiple" required>
+                                    </select>
+                                </div>
+                            </div>
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Active:</strong>
+                                </div>
+                                <div class="col-9">
+                                   <span class="kt-switch kt-switch--outline kt-switch--icon kt-switch--warning">
+                                        <label>
+                                            <input id="is_active" type="checkbox" name="is_active" href="JavaScript:void(0);">
+                                            <span></span>
+                                        </label>
+                                    </span>
+                                </div>
+                            </div>
+
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="save" class="btn btn-primary" onClick="submitEdit()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--end::Modal-->
+
+{{end}}
+
+{{define "scripts"}}
+    <script type="text/javascript">
+
+        $('#kt_select2_11').select2({
+            placeholder: "Add Value",
+            tags: true,
+            width:"100%"
+        });
+
+        function Edit(id){
+            $.ajax({
+                url:"/scorepro/admin/config/"+id,
+                type:"GET",
+                beforeSend:function (res){
+                },
+                success: function (res){
+                    ResVal = res.Value
+
+                    $('#select_value').select2({
+                        data: ResVal.split(','),
+                        tags: true,
+                        width:"100%"
+                    });
+                    $('#select_value').val(ResVal.split(',')).trigger('change')
+
+
+                    $('#id').val(id)
+                    $('#group_name_edit').val(res.GroupName)
+                    $('#key_edit').val(res.Key)
+                    $('#select_value').val(res.Value)
+                    if (res.Key === "response_service_off"){
+                        $('#select_value').prop("disabled", true);
+                    }else {
+                        $('#select_value').prop("disabled", false);
+                    }
+                    if (res.IsActive === 1){
+                        $('input[type="checkbox"]').attr("checked", "checked");
+                    }
+                },
+                error: function (){
+                    Swal.fire({
+                        type: 'warning',
+                        title: 'Oops...',
+                        text: 'Something went wrong!',
+                    });
+
+                }
+            })
+        }
+
+        function submitEdit(){
+            id = $('#id').val()
+            var value = $('#select_value').val()
+            var is_active = $('#is_active').val()
+            if (is_active == "on"){
+                is_active = 1
+            }else {
+                is_active = 0
+            }
+            data = {
+                group_name : $('#group_name_edit').val(),
+                key : $('#key_edit').val(),
+                value : value.toString(),
+                is_active : is_active,
+                csrf: $('#token_edit').val()
+            }
+            $.ajax({
+                url:"/scorepro/admin/config/update/"+id,
+                data : data,
+                type:"POST",
+                beforeSend:function (res){
+                },
+                success: function (res){
+                    Swal.fire(
+                        'Edit!',
+                        'telcoscore has been edit.',
+                        'success'
+                    );
+                    location.reload()
+                },
+                error: function (){
+                    Swal.fire(
+                        'Edit!',
+                        'telcoscore has been edit.',
+                        'success'
+                    );
+                    location.reload()
+                }
+
+            });
+
+
+        }
+
+        function submitAddRecord(){
+            var value = $('#kt_select2_11').val()
+            var data = {
+                group_name : $('#group_name').val(),
+                key : $('#key').val(),
+                value : value.toString(),
+                csrf: $('#token').val()
+            }
+
+            $.ajax({
+                url:"/scorepro/admin/config/store",
+                type:"POST",
+                data:data,
+                beforeSend: function() {
+                },
+                success: function(data){
+                    location.reload()
+                },
+                error: function (res) {
+                    Swal.fire(
+                        'New!',
+                        'Config has been Record.',
+                        'success'
+                    );
+                    location.reload()
+                }
+                })
+        }
+        //Datatable register
+
+        $('#kt_table').DataTable({
+            dom: 'Bfrtip',
+            processing: true,
+            serverSide: true,
+            lengthChange: true,
+            // fixedColumns: true,
+            autoWidth: false,
+            scrollX: true,
+            // scrollY: '50vh',
+            scrollCollapse: true,
+            fixedHeader: {
+                "header": false,
+                "footer": false
+            },
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            ajax: '/scorepro/admin/config/datatable',
+            columns: [
+                // {data: 'experian_id', name: 'experian_id'},
+                {data: 'group_name', name: 'ProspectID'},
+                {data: 'key', name: 'key'},
+                {data: 'value', name: 'value'},
+                {data: 'active', name: 'active'},
+                {data: 'created_at', name: 'created_at'},
+                {data: 'action', orderable: false, searchable: false, className: 'dt-center'},
+            ],
+        });
+
+        //Detail Function SET STATUS
+        function SetStatus(id){
+
+            var switchStatus = false;
+            $("#"+id).on('change', function() {
+                if ($(this).is(':checked')) {
+                    //SET ACTIVE
+                    $.ajax({
+                        url: "/scorepro/admin/config/set-active/"+id,
+                        type: 'POST',
+                        success: function (res) {
+                            Swal.fire(
+                                'ACTIVE!',
+                                'Config has been Active.',
+                                'success'
+                            );
+                            $('#kt_table').DataTable().ajax.reload();
+                        },
+                        error: function (res) {
+                            Swal.fire({
+                                type: 'warning',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            });
+                        }
+                    })
+                }
+                else {
+                    //SET INACTIVE
+                    $.ajax({
+                        url: "/scorepro/admin/config/set-inactive/"+id,
+                        type: 'POST',
+                        success: function (res) {
+                            Swal.fire(
+                                'INACTIVE!',
+                                'Config has been InActive.',
+                                'success'
+                            );
+                        },
+                        error: function (res) {
+                            Swal.fire({
+                                type: 'warning',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            });
+                        }
+                    })
+                }
+            });
+        }
+
+        //Delete function datatable
+        function Delete(id) {
+            data = new FormData();
+            data.append('csrf', $('meta[name="csrf-token"]').attr('content'));
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.value) {
+                    url = '/scorepro/admin/config/delete/' + id
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        beforeSend: function() {
+                        },
+                        success: function (res) {
+                            Swal.fire(
+                                'Deleted!',
+                                'telcoscore has been deleted.',
+                                'success'
+                            );
+                        },
+                        error: function (res) {
+                            Swal.fire({
+                                type: 'warning',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            });
+                        }
+                    })
+                }
+            });
+        }
+
+
+        function Copy(){
+            $(".buttons-copy").trigger("click");
+        }
+        function Csv(){
+            $(".buttons-csv").trigger("click");
+        }
+        function Excel(){
+            $(".buttons-excel").trigger("click");
+        }
+        function Pdf(){
+            $(".buttons-pdf").trigger("click");
+        }
+        function Print(){
+            $(".buttons-print").trigger("click");
+        }
+
+        $(".dt-buttons").hide()
+
+
+    </script>
+{{end}}

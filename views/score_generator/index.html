@@ -1,0 +1,298 @@
+{{define "content"}}
+    {{if .flashMessage}}
+        {{if (eq .flashMessage.Type "success")}}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <div class="alert-text">{{.flashMessage.Message}}</div>
+                <div class="alert-close">
+                    <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                </div>
+            </div>
+        {{end}}
+        {{if (eq .flashMessage.Type "error")}}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <div class="alert-text">{{.flashMessage.Message}}</div>
+                <div class="alert-close">
+                    <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                </div>
+            </div>
+        {{end}}
+    {{end}}
+    <div class="kt-portlet kt-portlet--mobile">
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="kt-portlet__head-label">
+                <span class="kt-portlet__head-icon">
+				<i class="kt-font-brand flaticon2-line-chart"></i>
+				</span>
+                <h3 class="kt-portlet__head-title">
+                    Score Generator
+                </h3>
+            </div>
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-wrapper">
+                    <div class="kt-portlet__head-actions">
+                        <div class="dropdown dropdown-inline">
+                            <a href="/scorepro/admin/score-generator/create" class="btn btn-brand btn-elevate btn-icon-sm float-right text-left">
+                                <i class="la la-plus"></i>
+                                New Record
+                            </a>
+                            <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" hidden>
+                                <i class="la la-download"></i> Export
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <ul class="kt-nav">
+                                    <li class="kt-nav__section kt-nav__section--first">
+                                        <span class="kt-nav__section-text">Choose an option</span>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Print()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-print"></i>
+                                            <span class="kt-nav__link-text">Print</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Copy()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-copy"></i>
+                                            <span class="kt-nav__link-text">Copy</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Excel()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-excel-o"></i>
+                                            <span class="kt-nav__link-text">Excel</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Csv()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-text-o"></i>
+                                            <span class="kt-nav__link-text">CSV</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Pdf()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-pdf-o"></i>
+                                            <span class="kt-nav__link-text">PDF</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-portlet__body">
+            {{include "score_generator/table"}}
+        </div>
+    </div>
+
+    {{/*MODAL DETAIl*/}}
+    <div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Credit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row form-group">
+                        <div class="col-6">
+                            <strong>Prospect ID</strong>
+                            <div class="col">
+                                <input id="prospectID" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Experian Result</strong>
+                            <div class="col">
+                                <input id="experian_result" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Status</strong>
+                            <div class="col">
+                                <input id="status" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Experian Score</strong>
+                            <div class="col">
+                                <input id="experian_score" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Mobile Phone</strong>
+                            <div class="col">
+                                <input id="phone_number" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Internal Result</strong>
+                            <div class="col">
+                                <input id="internal_result" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Result</strong>
+                            <div class="col">
+                                <input id="result" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Internal Score</strong>
+                            <div class="col">
+                                <input id="internal_score" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Score</strong>
+                            <div class="col">
+                                <input id="score" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Type</strong>
+                            <div class="col">
+                                <input id="type" class="form-control" disabled>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "scripts"}}
+    <script type="text/javascript">
+
+        //Datatable register
+
+        $('#kt_table').DataTable({
+            dom: 'Bfrtip',
+            processing: true,
+            serverSide: true,
+            lengthChange: true,
+            // fixedColumns: true,
+            autoWidth: false,
+            scrollX: true,
+            // scrollY: '50vh',
+            scrollCollapse: true,
+            fixedHeader: {
+                "header": false,
+                "footer": false
+            },
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            ajax: '/scorepro/admin/score-generator/datatable',
+            columns: [
+                {data: 'name', name: 'name'},
+                {data: 'endpoint', name: 'endpoint'},
+                {data: 'file_pickle', name: 'file_pickle'},
+                {data: 'save_result_to', name: 'save_result_to', width:30},
+                {data: 'save_result_object_name', name: 'save_result_object_name'},
+                {data: 'score_models_rules', name: 'score_models_rules'},
+                {data: 'description', name: 'description'},
+                {data: 'action', orderable: false, searchable: false, className: 'dt-center'},
+            ],
+        });
+
+        //Detail Function datatable
+        function Detail(id) {
+            $.ajax({
+                url: "/api/v1/scorepro/detail/" + id,
+                type: 'GET',
+                beforeSend: function () {
+                    //show loading gif
+                },
+                success: function (data) {
+                    $('#prospectID').val(data.data.ProspectID)
+                    $('#status').val(data.data.Status)
+                    $('#result').val(data.data.Result)
+                    $('#score').val(data.data.Score)
+                    $('#phone_number').val(data.data.PhoneNumber)
+                    $('#experian_score').val(data.data.ExperianScore)
+                    $('#experian_result').val(data.data.ExperianResult)
+                    $('#internal_score').val(data.data.InternalScore)
+                    $('#internal_result').val(data.data.InternalResult)
+                    $('#type').val(data.data.Type)
+                },
+                complete: function () {
+                    //remove loading gif
+                }
+            });
+        }
+
+        //Delete function datatable
+        function Delete(id) {
+            data = new FormData();
+            data.append('csrf', $('meta[name="csrf-token"]').attr('content'));
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: '/scorepro/admin/register/delete/' + id,
+                        type: 'DELETE',
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        success: function (res) {
+                            Swal.fire(
+                                'Deleted!',
+                                'telcoscore has been deleted.',
+                                'success'
+                            );
+                            $('#kt_table').DataTable().ajax.reload();
+                        },
+                        error: function (res) {
+                            Swal.fire({
+                                type: 'warning',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            });
+                        }
+                    })
+                }
+            });
+        }
+
+
+        function Copy() {
+            $(".buttons-copy").trigger("click");
+        }
+
+        function Csv() {
+            $(".buttons-csv").trigger("click");
+        }
+
+        function Excel() {
+            $(".buttons-excel").trigger("click");
+        }
+
+        function Pdf() {
+            $(".buttons-pdf").trigger("click");
+        }
+
+        function Print() {
+            $(".buttons-print").trigger("click");
+        }
+
+        $(".dt-buttons").hide()
+
+
+    </script>
+{{end}}

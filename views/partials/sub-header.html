@@ -1,0 +1,20 @@
+{{define "sub-header"}}
+    <div class="kt-subheader   kt-grid__item" id="kt_subheader">
+        <div class="kt-container  kt-container--fluid ">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">{{.activeMenu}}</h3>
+                <span class="kt-subheader__separator kt-hidden"></span>
+                <div class="kt-subheader__breadcrumbs">
+                    <a href="/scorepro/admin/home" class="kt-subheader__breadcrumbs-home">
+                        <i class="flaticon2-shelter"></i>
+                    </a>
+                    {{range .breadCrumbs}}
+                        <span class="kt-subheader__breadcrumbs-separator"></span>
+                        <a href="{{.link}}" class="kt-subheader__breadcrumbs-link">{{.menu}}</a>
+                    {{end}}
+                    <!-- <span class="kt-subheader__breadcrumbs-link kt-subheader__breadcrumbs-link--active">Active link</span> -->
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}

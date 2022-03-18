@@ -1,0 +1,225 @@
+{{define "content"}}
+    <div class="row">
+        <div class="col-lg-12">
+            <!--begin::Portlet-->
+            <div class="kt-portlet">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            User Add
+                        </h3>
+                    </div>
+                </div>
+
+                <!--begin::Form-->
+                <form class="kt-form" method="POST" action="/scorepro/admin/register/store" enctype="multipart/form-data">
+                    <input id="token" name="csrf" value="{{ getCsrfToken .ctx }}" hidden>
+                    <div class="kt-portlet__body">
+
+                        <div class="kt-section kt-section--first">
+                            <div class="form-group">
+                                <label>Nik:</label>
+                                <input type="text" name="nik" class="form-control" placeholder="Enter nik">
+                                <span class="form-text text-muted">Please enter your nik</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Name:</label>
+                                <input type="text" name="name" class="form-control" placeholder="Enter Name">
+                                <span class="form-text text-muted">Please enter your name</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Email address:</label>
+                                <input type="email" name="email" class="form-control" placeholder="Enter email">
+                                <span class="form-text text-muted">We'll never share your email with anyone else</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Password:</label>
+                                <input type="password" id="password" name="password" class="form-control"
+                                       placeholder="Enter Password">
+                                <span class="form-text text-muted">Please enter your password</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm Password:</label>
+                                <input class="form-control" type="password" placeholder="Confirm Password"
+                                       name="password_confirm">
+                                <span class="form-text text-muted">Please enter your confirm password</span>
+                            </div>
+                            <div class="form-group">
+                                <br>
+                                <label>User Role ID:</label>
+                                <div class="form-group row">
+                                    <div class=" col-lg-4 col-md-9 col-sm-12">
+                                        <select class="form-control kt-select2" id="kt_select2_1" name="user_role_id">
+                                            {{range .data}}
+                                            <option value="{{.ID}}">{{.Name}}</option>
+                                            {{end}}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+{{/*                            <div class="form-group">*/}}
+{{/*                                <label for="roles">Type User</label>*/}}
+{{/*                                <select class="form-control select2"*/}}
+{{/*                                        id="roles"*/}}
+{{/*                                        name="role_id">*/}}
+{{/*                                    <option></option>*/}}
+{{/*                                </select>*/}}
+{{/*                            </div>*/}}
+
+{{/*                            <div class="form-group">*/}}
+{{/*                                <label class="col-xl-3 col-lg-3 col-form-label">Image</label>*/}}
+{{/*                                <div class="col-lg-9 col-xl-6">*/}}
+{{/*                                    <div class="kt-avatar kt-avatar--outline" id="kt_user_avatar">*/}}
+{{/*                                        <div class="kt-avatar__holder" id="image_holder"*/}}
+{{/*                                             style=""></div>*/}}
+{{/*                                        <input type="hidden" name="img_temp" id="img_temp">*/}}
+{{/*                                        <label class="kt-avatar__upload" data-toggle="kt-tooltip" title=""*/}}
+{{/*                                               data-original-title="Change avatar">*/}}
+{{/*                                            <i class="fa fa-pen"></i>*/}}
+{{/*                                            <input type="file" id="image_file" name="image">*/}}
+{{/*                                        </label>*/}}
+{{/*                                        <span class="kt-avatar__cancel" data-toggle="kt-tooltip" title=""*/}}
+{{/*                                              data-original-title="Cancel avatar">*/}}
+{{/*																						<i class="fa fa-times"></i>*/}}
+{{/*																					</span>*/}}
+{{/*                                    </div>*/}}
+{{/*                                </div>*/}}
+{{/*                            </div>*/}}
+                        </div>
+                    </div>
+                    <div class="kt-portlet__foot">
+                        <div class="kt-form__actions">
+                            <button type="submit" class="btn btn-primary btn-brand btn-pill btn-elevate" id="kt_submit">
+                                Submit
+                            </button>
+                            <a href="/scorepro/admin/register" class="btn btn-secondary" id="cancel">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+
+                <!--end::Form-->
+            </div>
+
+            <!--end::Portlet-->
+        </div>
+    </div>
+{{end}}
+
+{{define "scripts"}}
+    <script type="text/javascript">
+        $('#kt_select2_1, #kt_select2_1_validate').select2({
+            placeholder: "Select a state"
+        });
+        // function replaceImage() {
+        //     var i = document.getElementById("image_holder").style.backgroundImage;
+        //     if (i != "") {
+        //         var strImage = i.split(/"/)[1];
+        //         var replace = strImage.replace(/^data:image\/[a-z]+;base64,/, "");
+        //         $("#img_temp").val(replace)
+        //     }
+        // }
+
+        $('#kt_submit').click(function (e) {
+            e.preventDefault();
+            var btn = $(this);
+            var form = $(this).closest('form');
+
+
+            form.validate({
+                rules: {
+                    nik: {
+                        required: true
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    password: {
+                        required: true
+                    },
+                    password_confirm: {
+                        minlength: 5,
+                        equalTo: "#password"
+                    },
+                    is_active: {
+                        required: true
+                    },
+                    is_multi_branch: {
+                        required: true
+                    },
+                    type_user: {
+                        required: true
+                    },
+                }
+            });
+
+            if (!form.valid()) {
+                return;
+            }
+
+            // btn.addClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light').attr('disabled', true);
+            swal.fire({
+                title: 'Please Wait..!',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                onOpen: () => {
+                    swal.showLoading()
+                }
+            });
+            form.ajaxSubmit({
+                type: 'POST',
+                url: '/scorepro/admin/register/store',
+                beforeSend: function (req) {
+                    var csrfToken = $("input[name=csrf_token]").val();
+                    console.log(csrfToken)
+
+                    req.setRequestHeader("X-CSRF-TOKEN", csrfToken)
+                },
+                success: function (response, status, xhr, $form) {
+                    // similate 2s delay
+                    swal.hideLoading();
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Success',
+                        icon: 'success',
+                        text: "Data berhasil disimpan",
+                    });
+                    window.location.href = "/scorepro/admin/register";
+                },
+                error: function (response, status, xhr, $form) {
+                    swal.hideLoading();
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Error',
+                        icon: 'error',
+                        text: response.responseJSON.message,
+                    });
+                }
+            });
+        });
+
+        // $('#roles').select2({
+        //     placeholder: "Select Role",
+        //     allowClear: true,
+        //     multiple: false,
+        //     ajax: {
+        //         url: '/scorepro/admin/roles/select2',
+        //         datatype: 'json',
+        //         delay: 250,
+        //         processResults: function (data) {
+        //             return {
+        //                 results: $.map(data, function (item) {
+        //                     return {
+        //                         text: item.text,
+        //                         id: item.id
+        //                     }
+        //                 })
+        //             };
+        //         }
+        //     }
+        // });
+
+    </script>
+{{end}}

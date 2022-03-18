@@ -1,0 +1,541 @@
+{{define "content"}}
+{{if .flashMessage}}
+{{if (eq .flashMessage.Type "success")}}
+<div class="alert alert-success alert-dismissible" role="alert">
+    <div class="alert-text">{{.flashMessage.Message}}</div>
+    <div class="alert-close">
+        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+    </div>
+</div>
+{{end}}
+{{if (eq .flashMessage.Type "error")}}
+<div class="alert alert-danger alert-dismissible" role="alert">
+    <div class="alert-text">{{.flashMessage.Message}}</div>
+    <div class="alert-close">
+        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+    </div>
+</div>
+{{end}}
+{{end}}
+<div class="kt-portlet kt-portlet--mobile">
+    <div class="kt-portlet__head kt-portlet__head--lg">
+        <div class="kt-portlet__head-label">
+                <span class="kt-portlet__head-icon">
+				<i class="kt-font-brand flaticon2-line-chart"></i>
+				</span>
+            <h3 class="kt-portlet__head-title">
+                Dashboard
+            </h3>
+            <input id="token" name="csrf" value="{{ getCsrfToken .ctx }}" hidden>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            <div class="kt-portlet__head-wrapper">
+                <div class="kt-portlet__head-actions">
+                    <div class="dropdown dropdown-inline">
+                        <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" hidden>
+                            <i class="la la-download"></i> Export
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <ul class="kt-nav">
+                                <li class="kt-nav__section kt-nav__section--first">
+                                    <span class="kt-nav__section-text">Choose an option</span>
+                                </li>
+                                <li class="kt-nav__item">
+                                    <a href="javascript:;" onclick="Print()" class="kt-nav__link">
+                                        <i class="kt-nav__link-icon la la-print"></i>
+                                        <span class="kt-nav__link-text">Print</span>
+                                    </a>
+                                </li>
+                                <li class="kt-nav__item">
+                                    <a href="javascript:;" onclick="Copy()" class="kt-nav__link">
+                                        <i class="kt-nav__link-icon la la-copy"></i>
+                                        <span class="kt-nav__link-text">Copy</span>
+                                    </a>
+                                </li>
+                                <li class="kt-nav__item">
+                                    <a href="javascript:;" onclick="Excel()" class="kt-nav__link">
+                                        <i class="kt-nav__link-icon la la-file-excel-o"></i>
+                                        <span class="kt-nav__link-text">Excel</span>
+                                    </a>
+                                </li>
+                                <li class="kt-nav__item">
+                                    <a href="javascript:;" onclick="Csv()" class="kt-nav__link">
+                                        <i class="kt-nav__link-icon la la-file-text-o"></i>
+                                        <span class="kt-nav__link-text">CSV</span>
+                                    </a>
+                                </li>
+                                <li class="kt-nav__item">
+                                    <a href="javascript:;" onclick="Pdf()" class="kt-nav__link">
+                                        <i class="kt-nav__link-icon la la-file-pdf-o"></i>
+                                        <span class="kt-nav__link-text">PDF</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <a style="color: white" data-toggle="modal" data-target="#add-modal"
+                       class="btn btn-brand btn-elevate btn-icon-sm">
+                        <i class="la la-plus"></i>
+                        New Record
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="kt-portlet__body">
+        {{include "experian_scoring/table"}}
+    </div>
+</div>
+
+<!--    Edit Modal-->
+<div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Scoring Experian</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form class="kt-form" role="form" id="form_add"
+                  enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row form-group">
+                        <div class="col-6">
+                            <input id="id" hidden disabled>
+                            <strong>Is Indosat</strong>
+                            <div class="col">
+                                <select class="form-control kt-select2" id="is_indosat_edit" name="is_indosat" style="width: 100%;">
+                                    <option disabled>Pilih Status Indosat</option>
+                                    <option value="YES">YES</option>
+                                    <option value="NO">NO</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Experian</strong>
+                            <div class="col">
+                                <select class="form-control kt-select2" id="experian_edit" name="experian" style="width: 100%;">
+                                    <option disabled>Pilih Score Experian</option>
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="MEDIUM">MEDIUM</option>
+                                    <option value="LOW">LOW</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Internal</strong>
+                            <div class="col">
+                                <select class="form-control kt-select2" id="internal_edit" name="internal" style="width: 100%;">
+                                    <option disabled>Pilih Score Internal</option>
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="MEDIUM">MEDIUM</option>
+                                    <option value="LOW">LOW</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Score Los</strong>
+                            <div class="col">
+                                <select class="form-control kt-select2" id="score_los_edit" name="score_los" style="width: 100%;">
+                                    <option disabled>Pilih Score Los</option>
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="MEDIUM">MEDIUM</option>
+                                    <option value="LOW">LOW</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Final Score</strong>
+                            <div class="col">
+                                <select class="form-control kt-select2" id="final_score_edit" name="final_score" style="width: 100%;">
+                                    <option disabled>Pilih Final Score Los</option>
+                                    <option value="HIGH">ASSTEL-HIGH</option>
+                                    <option value="LOW">ASSTEL-LOW</option>
+                                    <option value="ASS-HIGH">ASS-HIGH</option>
+                                    <option value="ASS-MEDIUM">ASS-MEDIUM</option>
+                                    <option value="ASS-LOW">ASS-LOW</option>
+                                    <option value="ASS-MEDIUM(2ND)">ASS-MEDIUM(2ND)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Notes</strong>
+                            <div class="col">
+                                <textarea id="notes_edit" name="notes" class="form-control"
+                                          placeholder="Notes"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary btn-brand btn-elevate" id="kt_submit_edit" onClick="submitEdit()">
+                    Submit
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--end-->
+
+
+<!--Add Modal-->
+<div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Scoring Experian</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form class="kt-form" role="form" id="form_edit"
+                  enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row form-group">
+                        <div class="col-6">
+                            <strong>Is Indosat</strong>
+                            <div class="col">
+                                <select class="form-control kt-select2" id="is_indosat" name="is_indosat" style="width: 100%;">
+                                    <option selected disabled>Pilih Status Indosat</option>
+                                    <option value="YES">YES</option>
+                                    <option value="NO">NO</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Experian</strong>
+                            <div class="col">
+                                <select class="form-control kt-select2 select2" id="experian" name="experian" style="width: 100%;">
+                                    <option selected disabled>Pilih Score Experian</option>
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="MEDIUM">MEDIUM</option>
+                                    <option value="LOW">LOW</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Internal</strong>
+                            <div class="col">
+                                <select class="form-control kt-select2" id="internal" name="internal" style="width: 100%;">
+                                    <option selected disabled>Pilih Score Internal</option>
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="MEDIUM">MEDIUM</option>
+                                    <option value="LOW">LOW</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Score Los</strong>
+                            <div class="col">
+                                <select class="form-control kt-select2" id="score_los" name="score_los" style="width: 100%;">
+                                    <option selected disabled>Pilih Score Los</option>
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="MEDIUM">MEDIUM</option>
+                                    <option value="LOW">LOW</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Final Score</strong>
+                            <div class="col">
+                                <select class="form-control kt-select2" id="final_score" name="final_score" style="width: 100%;">
+                                    <option selected disabled>Pilih Final Score Los</option>
+                                    <option value="HIGH">ASSTEL-HIGH</option>
+                                    <option value="LOW">ASSTEL-LOW</option>
+                                    <option value="ASS-HIGH">ASS-HIGH</option>
+                                    <option value="ASS-MEDIUM">ASS-MEDIUM</option>
+                                    <option value="ASS-LOW">ASS-LOW</option>
+                                    <option value="ASS-MEDIUM(2ND)">ASS-MEDIUM(2ND)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <strong>Notes</strong>
+                            <div class="col">
+                                <textarea id="notes" name="notes" class="form-control"
+                                          placeholder="Notes"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-brand btn-elevate" id="kt_submit" onClick="submitAddRecord()">
+                        Submit
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--end-->
+
+{{end}}
+
+{{define "scripts"}}
+<script type="text/javascript">
+
+    //EDIT
+    function Edit(id){
+        $.ajax({
+            url:"/scorepro/admin/experian/"+id,
+            type:"GET",
+            beforeSend:function (res){
+            },
+            success: function (res){
+                console.log("RES : ", res)
+
+                $('#id').val(id)
+                $('#is_indosat_edit').val(res.is_indosat)
+                $('#experian_edit').val(res.experian)
+                $('#internal_edit').val(res.internal)
+                $('#score_los_edit').val(res.score_los)
+                $('#final_score_edit').val(res.final_score)
+                $('#notes_edit').val(res.notes)
+            },
+            error: function (){
+                Swal.fire({
+                    type: 'warning',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                });
+
+            }
+        })
+    }
+
+    //SUBMIT EDIT FORM
+    function submitEdit(){
+        alert("EDIT")
+        var id = $('#id').val()
+        var data = {
+            is_indosat : $('#is_indosat').val(),
+            experian : $('#experian').val(),
+            internal : $('#internal').val(),
+            score_los : $('#score_los').val(),
+            final_score : $('#final_score').val(),
+            notes : $('#notes').val(),
+            csrf: $('#token').val()
+        }
+        $.ajax({
+            url:"/scorepro/admin/experian/update/"+id,
+            data : data,
+            type:"POST",
+            beforeSend:function (res){
+            },
+            success: function (res){
+                console.log("RES : ", res)
+                Swal.fire(
+                    'Edit!',
+                    'Experian Scoring has been edit.',
+                    'success'
+                );
+                location.reload()
+            },
+            error: function (res){
+                console.log("ERR : ", res)
+
+                alert("ERROR")
+                Swal.fire(
+                    'Edit!',
+                    'Experian Scoring has been edit.',
+                    'error'
+                );
+                setTimeout(function(){
+                    location.reload()
+                }, 10000);
+
+            }
+
+        });
+
+
+    }
+
+    // ADD
+    function submitAddRecord(){
+        var data = {
+            is_indosat : $('#is_indosat').val(),
+            experian : $('#experian').val(),
+            internal : $('#internal').val(),
+            score_los : $('#score_los').val(),
+            final_score : $('#final_score').val(),
+            notes : $('#notes').val(),
+            csrf: $('#token').val()
+        }
+
+        $.ajax({
+            url:"/scorepro/admin/experian/store",
+            type:"POST",
+            data:data,
+            beforeSend: function() {
+            },
+            success: function(data){
+                location.reload()
+            },
+            error: function (res) {
+                Swal.fire(
+                    'New!',
+                    'Config has been Record.',
+                    'success'
+                );
+                location.reload()
+            }
+        })    }
+
+    //Select2
+    $('#is_indosat,#is_indosat_edit, #is_indosat_validate').select2({
+        width:'resolve',
+        placeholder: "Select a state",
+    });
+
+    $('#experian, #experian_edit,#experian_validate').select2({
+        width:'resolve',
+        placeholder: "Select a state"
+    });
+
+    $('#internal, #internal_edit, #internal_validate').select2({
+        width:'resolve',
+        placeholder: "Select a state"
+    });
+
+    $('#score_los, #score_los_edit, #score_los_validate').select2({
+        width:'resolve',
+        placeholder: "Select a state"
+    });
+
+    $('#final_score,#final_score_edit, #final_score_validate').select2({
+        width:'resolve',
+        placeholder: "Select a state"
+    });
+
+    //Datatable register
+
+    $('#kt_table').DataTable({
+        dom: 'Bfrtip',
+        processing: true,
+        serverSide: true,
+        lengthChange: true,
+        // fixedColumns: true,
+        autoWidth: false,
+        scrollX: true,
+        // scrollY: '50vh',
+        scrollCollapse: true,
+        fixedHeader: {
+            "header": false,
+            "footer": false
+        },
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+        ajax: '/scorepro/admin/experian/datatable',
+        columns: [
+            {data: 'is_indosat', name: 'is_indosat'},
+            {data: 'experian', name: 'experian'},
+            {data: 'internal', name: 'internal'},
+            {data: 'score_los', name: 'score_los'},
+            {data: 'final_score', name: 'final_score'},
+            {data: 'notes', name: 'notes'},
+            {data: 'action', orderable: false, searchable: false, className: 'dt-center'},
+        ],
+    });
+
+    //Detail Function datatable
+    function Detail(id) {
+        $.ajax({
+            url: "/api/v1/score/credit/detail/" + id,
+            type: 'GET',
+            beforeSend: function () {
+                //show loading gif
+            },
+            success: function (data) {
+                console.log(data)
+                $('#prospectID').val(data.data.ProspectID)
+                $('#status').val(data.data.Status)
+                $('#result').val(data.data.Result)
+                $('#score').val(data.data.Score)
+                $('#phone_number').val(data.data.PhoneNumber)
+                $('#experian_score').val(data.data.ExperianScore)
+                $('#experian_result').val(data.data.ExperianResult)
+                $('#internal_score').val(data.data.InternalScore)
+                $('#internal_result').val(data.data.InternalResult)
+                $('#type').val(data.data.Type)
+            },
+            complete: function () {
+                //remove loading gif
+            }
+        });
+    }
+
+    //Delete function datatable
+    function Delete(id) {
+        data = new FormData();
+        data.append('csrf', $('meta[name="csrf-token"]').attr('content'));
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: '/scorepro/admin/register/delete/' + id,
+                    type: 'DELETE',
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        Swal.fire(
+                            'Deleted!',
+                            'telcoscore has been deleted.',
+                            'success'
+                        );
+                        $('#kt_table').DataTable().ajax.reload();
+                    },
+                    error: function (res) {
+                        Swal.fire({
+                            type: 'warning',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                        });
+                    }
+                })
+            }
+        });
+    }
+
+
+    function Copy() {
+        $(".buttons-copy").trigger("click");
+    }
+
+    function Csv() {
+        $(".buttons-csv").trigger("click");
+    }
+
+    function Excel() {
+        $(".buttons-excel").trigger("click");
+    }
+
+    function Pdf() {
+        $(".buttons-pdf").trigger("click");
+    }
+
+    function Print() {
+        $(".buttons-print").trigger("click");
+    }
+
+    $(".dt-buttons").hide()
+
+
+</script>
+{{end}}

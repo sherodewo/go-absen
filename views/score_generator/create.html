@@ -1,0 +1,693 @@
+{{define "content"}}
+{{if .flashMessage}}
+{{if (eq .flashMessage.Type "success")}}
+<div class="alert alert-success alert-dismissible" role="alert">
+    <div class="alert-text">{{.flashMessage.Message}}</div>
+    <div class="alert-close">
+        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+    </div>
+</div>
+{{end}}
+{{if (eq .flashMessage.Type "error")}}
+<div class="alert alert-danger alert-dismissible" role="alert">
+    <div class="alert-text">{{.flashMessage.Message}}</div>
+    <div class="alert-close">
+        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+    </div>
+</div>
+{{end}}
+{{end}}
+<!-- begin:: Content-->
+<div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
+    <div class="kt-portlet">
+        <div class="kt-portlet__body kt-portlet__body--fit">
+            <div class="kt-grid kt-wizard-v1 kt-wizard-v1--white" id="kt_wizard_v1" data-ktwizard-state="step-first">
+                <div class="kt-grid__item">
+
+                    <!--begin: Form Wizard Nav -->
+                    <div class="kt-wizard-v1__nav">
+
+                        <!--doc: Remove "kt-wizard-v1__nav-items--clickable" class and also set 'clickableSteps: false' in the JS init to disable manually clicking step titles -->
+                        <div class="kt-wizard-v1__nav-items kt-wizard-v1__nav-items--clickable">
+                            <div class="kt-wizard-v1__nav-item" data-ktwizard-type="step" data-ktwizard-state="current">
+                                <div class="kt-wizard-v1__nav-body">
+                                    <div class="kt-wizard-v1__nav-icon">
+                                        <i class="flaticon-bus-stop"></i>
+                                    </div>
+                                    <div class="kt-wizard-v1__nav-label">
+                                        1. Score Generator
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="kt-wizard-v1__nav-item" data-ktwizard-type="step">
+                                <div class="kt-wizard-v1__nav-body">
+                                    <div class="kt-wizard-v1__nav-icon">
+                                        <i class="flaticon-list"></i>
+                                    </div>
+                                    <div class="kt-wizard-v1__nav-label">
+                                        2. Score Generator Metadata
+                                    </div>
+                                </div>
+                            </div>
+<!--                            <div class="kt-wizard-v1__nav-item" data-ktwizard-type="step">-->
+<!--                                <div class="kt-wizard-v1__nav-body">-->
+<!--                                    <div class="kt-wizard-v1__nav-icon">-->
+<!--                                        <i class="flaticon-globe"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="kt-wizard-v1__nav-label">-->
+<!--                                        3. Review and Submit-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+
+                    <!--end: Form Wizard Nav -->
+                </div>
+                <div class="kt-grid__item kt-grid__item--fluid kt-wizard-v1__wrapper">
+
+                    <!--begin: Form Wizard Form-->
+                    <form class="kt-form" id="kt_form" method="POST" action="/scorepro/admin/score-generator/store"
+                          enctype="multipart/form-data">
+
+                        <!--begin: Form Wizard Step 1-->
+                        <div class="kt-wizard-v1__content" data-ktwizard-type="step-content"
+                             data-ktwizard-state="current">
+                            <div class="kt-heading kt-heading--md">Insert & Upload File Score Generator</div>
+                            <div class="kt-form__section kt-form__section--first">
+                                <div class="kt-wizard-v1__form">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" class="form-control" name="name" id="name" placeholder="Name">
+                                        <span class="form-text text-muted">Please enter your Score Generator Name.</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <textarea type="text" class="form-control" name="description"
+                                                  placeholder="Description Score Generator"></textarea>
+                                        <span class="form-text text-muted">Please enter your Description.</span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6">
+                                            <div class="form-group">
+                                                <label>Endpoint</label>
+                                                <input type="text" class="form-control" name="endpoint"
+                                                       placeholder="Endpoint">
+                                                <span class="form-text text-muted">Please enter your Endpoint.</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <div class="form-group">
+                                                <label>Save Result To</label>
+                                                <select class="form-control kt-select2" id="save_db"
+                                                        name="save_result_to" style="width: 100%;">
+                                                    <option selected disabled>Select Save Result To</option>
+                                                    <option value="TABLE">TABLE</option>
+                                                </select>
+                                                <span class="form-text text-muted">Please enter Save Result To.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-6">
+                                            <div class="form-group">
+                                                <label>Save Result Object Name</label>
+                                                <input type="text" class="form-control" name="save_result_object_name" placeholder="Save Result Object Name">
+                                                <span class="form-text text-muted">Please enter Save Result Object Name.</span>
+                                            </div>
+                                        </div>
+<!--                                        <div class="col-xl-6">-->
+<!--                                            <div class="form-group">-->
+<!--                                                <label>Score Models Rules</label>-->
+<!--                                                <select class="form-control kt-select2" id="score_models"-->
+<!--                                                        name="score_models_rules" style="width: 100%;">-->
+<!--                                                    <option selected disabled>Pilih Score Models</option>-->
+<!--                                                </select>-->
+<!--                                                <span class="form-text text-muted">Please select Score Models Rules.</span>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+                                    </div>
+                                    <div class="row">
+<!--                                        <input type="text" name="file_pickle" id="file_pickle">-->
+
+                                        <div class="col-xl-12">
+                                            <label>Upload File Pickle</label>
+                                            <div class="dropzone dropzone-default" id="kt_dropzone_1">
+                                                <div class="dropzone-msg dz-message needsclick">
+                                                    <h3 class="dropzone-msg-title">Drop files here or click to
+                                                        upload.</h3>
+                                                    <span class="dropzone-msg-desc">Upload File Pickle, Size Tidak boleh lebih 1 MB.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--end: Form Wizard Step 1-->
+
+                        <!--begin: Form Wizard Step 2-->
+                        <div class="kt-wizard-v1__content" data-ktwizard-type="step-content">
+                            <!--begin::Accordion-->
+                            <div class="accordion accordion-solid accordion-panel accordion-toggle-svg"
+                                 id="accordionExample8">
+                                <button type="button" class="btn btn-primary float-right text-right" id="tambah-form">
+                                    Tambah Form <i class="fas fa-plus"></i></button>
+
+                                <div class="card">
+                                    <div class="card-header" id="headingOne8">
+                                        <div class="card-title" data-toggle="collapse" data-target="#collapseOne8"
+                                             aria-expanded="true" aria-controls="collapseOne8">
+                                            Score Generator Meta Data
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px"
+                                                 viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
+                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                    <polygon points="0 0 24 0 24 24 0 24"/>
+                                                    <path d="M12.2928955,6.70710318 C11.9023712,6.31657888 11.9023712,5.68341391 12.2928955,5.29288961 C12.6834198,4.90236532 13.3165848,4.90236532 13.7071091,5.29288961 L19.7071091,11.2928896 C20.085688,11.6714686 20.0989336,12.281055 19.7371564,12.675721 L14.2371564,18.675721 C13.863964,19.08284 13.2313966,19.1103429 12.8242777,18.7371505 C12.4171587,18.3639581 12.3896557,17.7313908 12.7628481,17.3242718 L17.6158645,12.0300721 L12.2928955,6.70710318 Z"
+                                                          fill="#000000" fill-rule="nonzero"/>
+                                                    <path d="M3.70710678,15.7071068 C3.31658249,16.0976311 2.68341751,16.0976311 2.29289322,15.7071068 C1.90236893,15.3165825 1.90236893,14.6834175 2.29289322,14.2928932 L8.29289322,8.29289322 C8.67147216,7.91431428 9.28105859,7.90106866 9.67572463,8.26284586 L15.6757246,13.7628459 C16.0828436,14.1360383 16.1103465,14.7686056 15.7371541,15.1757246 C15.3639617,15.5828436 14.7313944,15.6103465 14.3242754,15.2371541 L9.03007575,10.3841378 L3.70710678,15.7071068 Z"
+                                                          fill="#000000" fill-rule="nonzero" opacity="0.3"
+                                                          transform="translate(9.000003, 11.999999) rotate(-270.000000) translate(-9.000003, -11.999999) "/>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <div id="collapseOne8" class="collapse show" aria-labelledby="headingOne8"
+                                         data-parent="#accordionExample8">
+                                        <div class="card-body">
+                                            <div class="kt-form__section kt-form__section--first">
+                                                <div class="kt-wizard-v1__form">
+                                                    <div class="row">
+                                                        <div class="col-xl-6">
+                                                            <div class="form-group">
+                                                                <label>Param Request Payload</label>
+                                                                <input type="text" class="form-control"
+                                                                       name="param_request_payload"
+                                                                       placeholder="Param Request Payload">
+                                                                <span class="form-text text-muted">Please enter param request payload</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-6">
+                                                            <div class="form-group">
+                                                                <label>Field Pickle</label>
+                                                                <input type="text" class="form-control"
+                                                                       name="field_pickle" placeholder="Field Pickle">
+                                                                <span class="form-text text-muted">Please enter your Field Pickle.</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-xl-6">
+                                                            <div class="form-group">
+                                                                <label>Data Type</label>
+                                                                <select class="form-control kt-select2" id="data_type"
+                                                                        name="data_type" style="width: 100%;">
+                                                                    <option selected disabled>Select Save Result To</option>
+                                                                    <option value="varchar">VARCHAR</option>
+                                                                    <option value="int">INTEGER</option>
+                                                                    <option value="bigint">BIG INTEGER</option>
+                                                                </select>
+                                                                <span class="form-text text-muted">If data length more than 1 Thousand please choose Big Integer.</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-6">
+                                                            <div class="form-group">
+                                                                <label>Length</label>
+                                                                <input type="number" class="form-control" name="length"
+                                                                       placeholder="Length">
+                                                                <span class="form-text text-muted">Please enter your length.</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-xl-6">
+                                                            <div class="form-group">
+                                                                <label>Required</label>
+                                                                <select class="form-control kt-select2" id="isRequired"
+                                                                        name="is_required" style="width: 100%;">
+                                                                    <option selected disabled>Is Required</option>
+                                                                    <option value="TRUE">TRUE</option>
+                                                                    <option value="FALSE">FALSE</option>
+                                                                </select>
+                                                                <span class="form-text text-muted">Please fill Required.</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <here></here>
+                            </div>
+
+                            <!--end::Accordion-->
+
+                        </div>
+
+                        <!--end: Form Wizard Step 2-->
+
+<!--                        &lt;!&ndash;begin: Form Wizard Step 3&ndash;&gt;-->
+<!--                        <div class="kt-wizard-v1__content" data-ktwizard-type="step-content">-->
+<!--                            <div class="kt-heading kt-heading&#45;&#45;md">Review your Details and Submit</div>-->
+<!--                            <div class="kt-form__section kt-form__section&#45;&#45;first">-->
+<!--                                <div class="kt-wizard-v1__review">-->
+<!--                                    <div class="kt-wizard-v1__review-item">-->
+<!--                                        <div class="kt-wizard-v1__review-title">-->
+<!--                                            Current Json-->
+<!--                                        </div>-->
+<!--                                        <div class="kt-wizard-v1__review-content" id="detail">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+                        <!--end: Form Wizard Step 3-->
+
+                        <!--begin: Form Actions -->
+                        <div class="kt-form__actions">
+                            <button class="btn btn-secondary btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u"
+                                    data-ktwizard-type="action-prev">
+                                Previous
+                            </button>
+                            <button class="btn btn-success btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u"
+                                    data-ktwizard-type="action-submit" id="data-submit">
+                                Submit
+                            </button>
+                            <button class="btn btn-brand btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u"
+                                    data-ktwizard-type="action-next" id="next-step">
+                                Next Step
+                            </button>
+                        </div>
+
+                        <!--end: Form Actions -->
+                    </form>
+
+                    <!--end: Form Wizard Form-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- end:: Content -->
+
+{{end}}
+
+{{define "scripts"}}
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+<!--<script src="/scorepro/assets/js/pages/crud/file-upload/dropzonejs.js" type="text/javascript"></script>-->
+<!--SELECT 2-->
+<script>
+
+
+    $('#score_models, #isRequired, #save_db, #data_type').select2({
+        width: 'resolve',
+        placeholder: "Select a Score Models",
+    });
+</script>
+
+<!--WIZARD-->
+<script>
+    var i
+    i = 0
+    $('#tambah-form').click(function () {
+        i++
+        $("here").append("<div class=\"card\" id='delete"+i+"'>\n" +
+            "<div class=\"card-header\" id=\"headingThree"+i+"\">\n" +
+            "<button type=\"button\" class=\"btn btn-danger float-right text-right mt-2\" id=\"delete-form\" onclick='deleteForm("+i+")'>Delete Form <i class=\"fas fa-minus\"></i></button>\n" +
+            "\n" +
+            "<div class=\"card-title collapsed\" data-toggle=\"collapse\" data-target=\"#collapseThree"+i+"\" aria-expanded=\"false\" aria-controls=\"collapseThree"+i+"\">\n" +
+            "Field Data <svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"24px\" height=\"24px\" viewBox=\"0 0 24 24\" version=\"1.1\" class=\"kt-svg-icon\">\n" +
+            "<g stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n" +
+            "<polygon points=\"0 0 24 0 24 24 0 24\" />\n" +
+            "<path d=\"M12.2928955,6.70710318 C11.9023712,6.31657888 11.9023712,5.68341391 12.2928955,5.29288961 C12.6834198,4.90236532 13.3165848,4.90236532 13.7071091,5.29288961 L19.7071091,11.2928896 C20.085688,11.6714686 20.0989336,12.281055 19.7371564,12.675721 L14.2371564,18.675721 C13.863964,19.08284 13.2313966,19.1103429 12.8242777,18.7371505 C12.4171587,18.3639581 12.3896557,17.7313908 12.7628481,17.3242718 L17.6158645,12.0300721 L12.2928955,6.70710318 Z\" fill=\"#000000\" fill-rule=\"nonzero\" />\n" +
+            "<path d=\"M3.70710678,15.7071068 C3.31658249,16.0976311 2.68341751,16.0976311 2.29289322,15.7071068 C1.90236893,15.3165825 1.90236893,14.6834175 2.29289322,14.2928932 L8.29289322,8.29289322 C8.67147216,7.91431428 9.28105859,7.90106866 9.67572463,8.26284586 L15.6757246,13.7628459 C16.0828436,14.1360383 16.1103465,14.7686056 15.7371541,15.1757246 C15.3639617,15.5828436 14.7313944,15.6103465 14.3242754,15.2371541 L9.03007575,10.3841378 L3.70710678,15.7071068 Z\" fill=\"#000000\" fill-rule=\"nonzero\" opacity=\"0.3\" transform=\"translate(9.000003, 11.999999) rotate(-270.000000) translate(-9.000003, -11.999999) \" />\n" +
+            " </g>\n" +
+            "      </svg> </div>\n" +
+            "  </div>\n" +
+            "\n" +
+            "  <div id=\"collapseThree"+i+"\" class=\"collapse\" aria-labelledby=\"headingThree"+i+"\" data-parent=\"#accordionExample8\">\n" +
+            "      <div class=\"card-body\">\n" +
+            "<div class=\"kt-form__section kt-form__section--first\">\n" +
+            "                                                <div class=\"kt-wizard-v1__form\">\n" +
+            "                                                    <div class=\"row\">\n" +
+            "                                                        <div class=\"col-xl-6\">\n" +
+            "                                                            <div class=\"form-group\">\n" +
+            "                                                                <label>Param Request Payload</label>\n" +
+            "                                                                <input type=\"text\" class=\"form-control\"\n" +
+            "                                                                       name=\"param_request_payload\"\n" +
+            "                                                                       placeholder=\"Param Request Payload\">\n" +
+            "                                                                <span class=\"form-text text-muted\">Please enter param request payload</span>\n" +
+            "                                                            </div>\n" +
+            "                                                        </div>\n" +
+            "                                                        <div class=\"col-xl-6\">\n" +
+            "                                                            <div class=\"form-group\">\n" +
+            "                                                                <label>Field Pickle</label>\n" +
+            "                                                                <input type=\"text\" class=\"form-control\"\n" +
+            "                                                                       name=\"field_pickle\" placeholder=\"Field Pickle\">\n" +
+            "                                                                <span class=\"form-text text-muted\">Please enter your Field Pickle.</span>\n" +
+            "                                                            </div>\n" +
+            "                                                        </div>\n" +
+            "                                                    </div>\n" +
+            "                                                    <div class=\"row\">\n" +
+            "                                                        <div class=\"col-xl-6\">\n" +
+            "                                                            <div class=\"form-group\">\n" +
+            "                                                                <label>Data Type</label>\n" +
+            "                                                                   <select class=\"form-control kt-select2\" id=\"data_type"+i+"\"\n" +
+            "                                                                        name=\"data_type\" style=\"width: 100%;\">\n" +
+            "                                                                    <option selected disabled>Select Save Result To</option>\n" +
+            "                                                                    <option value=\"varchar\">VARCHAR</option>\n" +
+            "                                                                    <option value=\"int\">INTEGER</option>\n" +
+            "                                                                </select>"+
+            "                                                                <span class=\"form-text text-muted\">Please enter your Data Type.</span>\n" +
+            "                                                            </div>\n" +
+            "                                                        </div>\n" +
+            "                                                        <div class=\"col-xl-6\">\n" +
+            "                                                            <div class=\"form-group\">\n" +
+            "                                                                <label>Length</label>\n" +
+            "                                                                <input type=\"number\" class=\"form-control\" name=\"length\"\n" +
+            "                                                                       placeholder=\"Length\">\n" +
+            "                                                                <span class=\"form-text text-muted\">Please enter your length.</span>\n" +
+            "                                                            </div>\n" +
+            "                                                        </div>\n" +
+            "                                                    </div>\n" +
+            "                                                    <div class=\"row\">\n" +
+            "                                                        <div class=\"col-xl-6\">\n" +
+            "                                                            <div class=\"form-group\">\n" +
+            "                                                                <label>Required</label>\n" +
+            "                                                                <select class=\"form-control kt-select2\" id=\"isRequired"+i+"\"\n" +
+            "                                                                        name=\"is_required\" style=\"width: 100%;\">\n" +
+            "                                                                    <option selected disabled>Is Required</option>\n" +
+            "                                                                    <option value=\"TRUE\">TRUE</option>\n" +
+            "                                                                    <option value=\"FALSE\">FALSE</option>\n" +
+            "                                                                </select>\n" +
+            "                                                                <span class=\"form-text text-muted\">Please fill Required.</span>\n" +
+            "                                                            </div>\n" +
+            "                                                        </div>\n" +
+            "                                                    </div>\n" +
+            "                                                </div>\n" +
+            "                                            </div>"+
+            "      </div>\n" +
+            "  </div>\n" +
+            "</div>")
+
+        $('#score_models, #isRequired'+i+',#data_type'+i+'').select2({
+            width: 'resolve',
+            placeholder: "Select a Score Models",
+        });
+    })
+
+    function deleteForm(num){
+        $('#delete'+num).remove()
+    }
+
+    "use strict";
+    $.ajax({
+        url: "/scorepro/admin/score-generator/score-model-rules",
+        type: 'GET',
+        beforeSend: function () {
+            //show loading gif
+        },
+        success: function (data) {
+            var dataModel = []
+
+            $.each(data.data, function (i, val) {
+
+                dataModel.push({
+                    id: val.ID,
+                    text: val.key
+                })
+
+            })
+            $('#score_models').select2({
+                placeholder: "Status Kepemilikan",
+                data: dataModel
+            });
+
+        },
+        complete: function () {
+            //remove loading gif
+        }
+    });
+
+    var errors = false;
+    var datas;
+    var fileName;
+
+    $('#kt_dropzone_1').dropzone({
+        url: "/scorepro/admin/score-generator/upload/1", // Set the url for your upload script location
+        paramName: "file", // The name that will be used to transfer the file
+        maxFiles: 1,
+        maxFilesize: 1, // MB
+        acceptedFiles: '.pkl',
+        addRemoveLinks: true,
+        // disablePreviews: false,
+        accept: function (file, done) {
+            // if (file.name == "justinbieber.jpg") {
+            //     done("Naha, you don't.");
+            // } else {
+            $('file_pickle').val(file.name)
+            datas = file
+            fileName = file.name
+            done();
+            // }
+        },
+        error: function(file, errorMessage,res) {
+            swal.fire({
+                "title": "Upload Failed !",
+                "text": file.name+" "+errorMessage.messages,
+                "type": "error",
+                "confirmButtonClass": "btn btn-secondary"
+            });
+        },
+    });
+var btnSubmit ;
+    // Class definition
+    var KTWizard1 = function () {
+        // Base elements
+        var wizardEl;
+        var formEl;
+        var validator;
+        var wizard;
+
+        // Private functions
+        var initWizard = function () {
+            // Initialize form wizard
+            wizard = new KTWizard('kt_wizard_v1', {
+                startStep: 1, // initial active step number
+                clickableSteps: true  // allow step clicking
+            });
+
+            // Validation before going to next page
+            wizard.on('beforeNext', function (wizardObj) {
+                if (validator.form() !== true) {
+                    wizardObj.stop();  // don't go to the next step
+                }
+            });
+
+            wizard.on('beforePrev', function (wizardObj) {
+                if (validator.form() !== true) {
+                    wizardObj.stop();  // don't go to the next step
+                }
+            });
+
+            // Change event
+            wizard.on('change', function (wizard) {
+                setTimeout(function () {
+                    KTUtil.scrollTop();
+                }, 500);
+            });
+        }
+
+        var initValidation = function () {
+            validator = formEl.validate({
+                // Validate only visible fields
+                ignore: ":hidden",
+
+                // Validation rules
+                rules: {
+                    //= Step 1
+                    name: {
+                        required: true
+                    },
+                    endpoint: {
+                        required: true
+                    },
+                    save_result_to: {
+                        required: true
+                    },
+                    save_result_object_name: {
+                        required: true
+                    },
+                    score_models_rules: {
+                        required: true
+                    },
+
+                    //= Step 2
+                    param_request_payload: {
+                        required: true
+                    },
+                    field_pickle: {
+                        required: true
+                    },
+                    data_type: {
+                        required: true
+                    },
+                    is_required: {
+                        required: true
+                    },
+                    length: {
+                        required: true
+                    },
+                },
+
+                // Display error
+                invalidHandler: function (event, validator) {
+                    KTUtil.scrollTop();
+
+                    swal.fire({
+                        "title": "",
+                        "text": "There are some errors in your submission. Please correct them.",
+                        "type": "error",
+                        "confirmButtonClass": "btn btn-secondary"
+                    });
+                },
+
+                // Submit valid form
+                submitHandler: function (form) {
+
+                }
+            });
+        }
+
+        var initSubmit = function () {
+            var btn = formEl.find('[data-ktwizard-type="action-submit"]');
+            btn.on('click', function (e) {
+                e.preventDefault();
+
+                if (validator.form()) {
+                    // See: src\js\framework\base\app.js
+                    btnSubmit = btn
+                    KTApp.progress(btn);
+                    // setTimeout(function (){
+                    //     KTApp.unprogress(btn);
+                    // })
+                    //KTApp.block(formEl);
+
+                    // See: http://malsup.com/jquery/form/#ajaxSubmit
+
+                    // formEl.ajaxSubmit({
+                    //     beforeSubmit:  function (){
+                    //         return output
+                    //     },
+                    //     // pre-submit callback
+                    //     success: function () {
+                    //         KTApp.unprogress(btn);
+                    //         //KTApp.unblock(formEl);
+                    //
+                    //         swal.fire({
+                    //             "title": "",
+                    //             "text": "The application has been successfully submitted!",
+                    //             "type": "success",
+                    //             "confirmButtonClass": "btn btn-secondary"
+                    //         });
+                    //         // location.replace("/scorepro/admin/score-generator")
+                    //     },
+                    //     error: function (res) {
+                    //         KTApp.unprogress(btn);
+                    //         swal.fire({
+                    //             "title": res,
+                    //             "text": "The application unsuccessfull !",
+                    //             "type": "error",
+                    //             "confirmButtonClass": "btn btn-secondary"
+                    //         });
+                    //     }
+                    // });
+                }
+            });
+        }
+
+        return {
+            // public functions
+            init: function () {
+                wizardEl = KTUtil.get('kt_wizard_v1');
+                formEl = $('#kt_form');
+
+                initWizard();
+                initValidation();
+                initSubmit();
+            }
+        };
+    }();
+
+    jQuery(document).ready(function () {
+        KTWizard1.init();
+    });
+
+
+
+    var groupParamsByKey = (params) => [...params.entries()].reduce((acc, tuple) => {
+        // getting the key and value from each tuple
+        var [key, val] = tuple;
+        if(acc.hasOwnProperty(key)) {
+            // if the current key is already an array, we'll add the value to it
+            if(Array.isArray(acc[key])) {
+                acc[key] = [...acc[key], val].toString()
+            } else {
+                // if it's not an array, but contains a value, we'll convert it into an array
+                // and add the current value to it
+                acc[key] = [acc[key], val].toString();
+            }
+        } else {
+            // plain assignment if no special case is present
+            acc[key] = val;
+        }
+
+        return acc;
+    }, {});
+
+    $('#data-submit').click(function (){
+        var params = new URLSearchParams($('#kt_form').serialize()+ "&file_pickle=" + fileName);
+        var output = groupParamsByKey(params);
+        $.ajax({
+            url:"/scorepro/admin/score-generator/store",
+            data:output,
+            dataType: "json",
+            type:"POST",
+            beforeSend:function (res){
+            },
+            success: function () {
+                KTApp.unprogress(btnSubmit);
+                //KTApp.unblock(formEl);
+
+                swal.fire({
+                    "title": "",
+                    "text": "The application has been successfully submitted!",
+                    "type": "success",
+                    "confirmButtonClass": "btn btn-secondary"
+                });
+                location.replace("/scorepro/admin/score-generator")
+            },
+            error: function (xhr) {
+                KTApp.unprogress(btnSubmit);
+
+                swal.fire({
+                    "title": xhr.responseText,
+                    "text": "The application unsuccessfull !",
+                    "type": "error",
+                    "confirmButtonClass": "btn btn-secondary",
+                    width: '800px'
+
+                });
+            }
+        })
+    })
+
+
+</script>
+{{end}}

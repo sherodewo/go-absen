@@ -1,0 +1,447 @@
+{{define "content"}}
+    {{if .flashMessage}}
+        {{if (eq .flashMessage.Type "success")}}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <div class="alert-text">{{.flashMessage.Message}}</div>
+                <div class="alert-close">
+                    <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                </div>
+            </div>
+        {{end}}
+        {{if (eq .flashMessage.Type "error")}}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <div class="alert-text">{{.flashMessage.Message}}</div>
+                <div class="alert-close">
+                    <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                </div>
+            </div>
+        {{end}}
+    {{end}}
+    <div class="kt-portlet kt-portlet--mobile">
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="kt-portlet__head-label">
+                <span class="kt-portlet__head-icon">
+				<i class="kt-font-brand flaticon2-line-chart"></i>
+				</span>
+                <h3 class="kt-portlet__head-title">
+                    Supplier
+                </h3>
+            </div>
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-wrapper">
+                    <div class="kt-portlet__head-actions">
+                        <div class="dropdown dropdown-inline">
+                            <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" hidden>
+                                <i class="la la-download"></i> Export
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <ul class="kt-nav">
+                                    <li class="kt-nav__section kt-nav__section--first">
+                                        <span class="kt-nav__section-text">Choose an option</span>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Print()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-print"></i>
+                                            <span class="kt-nav__link-text">Print</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a  href="javascript:;" onclick="Copy()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-copy"></i>
+                                            <span class="kt-nav__link-text">Copy</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Excel()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-excel-o"></i>
+                                            <span class="kt-nav__link-text">Excel</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Csv()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-text-o"></i>
+                                            <span class="kt-nav__link-text">CSV</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="javascript:;" onclick="Pdf()" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-pdf-o"></i>
+                                            <span class="kt-nav__link-text">PDF</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a style="color:white;" data-toggle="modal" id="record" data-target="#add" class="btn btn-brand btn-elevate btn-icon-sm">
+                            <i class="la la-plus"></i>
+                            New Record
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-portlet__body">
+            {{include "supplier/table"}}
+        </div>
+    </div>
+{{/*MODAL ADD*/}}
+<!--begin::Modal-->
+<div class="modal fade edit_region_modal" id="add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">ADD CONFIG</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="kt-form" role="form" id="form_add" method="POST" action="/los-cms/admin/config/store">
+                    <input type="hidden" id="token" name="csrf" value="{{ getCsrfToken .ctx }}">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-3">
+                                <strong>Key:</strong>
+                            </div>
+                            <div class="col">
+                                <select class="form-control kt-select2" id="key" name="key" required>
+                                    <option value="list_supplier_id">list_supplier_id</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-3">
+                                <strong>Value:</strong>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" class="form-control required texts" name="value" id="value" required>
+                            </div>
+                        </div>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-3">
+                                <strong>Description:</strong>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" class="form-control required texts" id="description" name="description" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-3">
+                                <strong>Score Generators:</strong>
+                            </div>
+                            <div class="col-9">
+                                <select class="form-control kt-select2" id="score_generators"
+                                        name="score_generators" style="width: 100%;">
+                                    <option selected disabled>Pilih Score Models</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="save-record" class="btn btn-primary" onClick="submitAddRecord()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--end::Modal-->
+
+    {{/*MODAL EDIT*/}}
+    <!--begin::Modal-->
+    <div class="modal fade edit_region_modal" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Supplier</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="kt-form" role="form" id="form-update" method="POST" action="/scorepro/admin/supplier/update">
+                        <input type="hidden" id="token_edit" name="csrf" value="{{ getCsrfToken .ctx }}">
+                        <input type="hidden" id="id" name="id">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Key:</strong>
+                                </div>
+                                <div class="col">
+                                    <select class="form-control kt-select2" id="key_edit" name="key" required>
+                                        <option value="list_supplier_id">list_supplier_id</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Value:</strong>
+                                </div>
+                                <div class="col-9">
+                                    <input type="text" class="form-control required texts" name="value" id="value_edit" required>
+                                </div>
+                            </div>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Description:</strong>
+                                </div>
+                                <div class="col-9">
+                                    <input type="text" class="form-control required texts" id="desc_edit" name="description" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Score Generators:</strong>
+                                </div>
+                                <div class="col-9">
+                                    <select class="form-control kt-select2" id="score_generators_edit"
+                                            name="score_generators" style="width: 100%;">
+                                        <option selected disabled>Pilih Score Models</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="save" class="btn btn-primary" onClick="submitEdit()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--end::Modal-->
+
+{{end}}
+
+{{define "scripts"}}
+    <script type="text/javascript">
+        // Initiate Select 2
+        $('#kt_select2_11,#key,#score_generators,#score_generators_edit,#key_edit').select2({
+            placeholder: "Add Value",
+            tags: true,
+            width:"100%"
+        });
+
+        // $('#record').click(function (){
+            //Get Score Generator List
+            $.ajax({
+                url:"/scorepro/admin/score-generator/all",
+                type:"GET",
+                success:function (res){
+                    console.log(res)
+                    var dataModel = []
+
+                    $.each(res.data, function (i, val) {
+
+                        dataModel.push({
+                            id: val.ID,
+                            text: val.name
+                        })
+
+                    })
+                    $('#score_generators,#score_generators_edit').select2({
+                        placeholder: "Score Generator",
+                        data: dataModel
+                    });
+                },
+        })
+
+        // Submit Edit
+        function Edit(id){
+            $.ajax({
+                url:"/scorepro/admin/supplier/"+id,
+                type:"GET",
+                beforeSend:function (res){
+                },
+                success: function (res){
+                    console.log(res)
+                    $('#id').val(id)
+                    $('#score_generators_edit').val(res.score_generators).trigger('change')
+                    $('#value_edit').val(res.value)
+                    $('#desc_edit').val(res.description)
+                    $('#key_edit').val(res.key).trigger('change')
+
+                },
+                error: function (){
+                    Swal.fire({
+                        type: 'warning',
+                        title: 'Oops...',
+                        text: 'Something went wrong!',
+                    });
+
+                }
+            })
+        }
+
+        function submitEdit(){
+            id = $('#id').val()
+
+            data = $('#form-update').serialize()
+            $.ajax({
+                url:"/scorepro/admin/supplier/update/"+id,
+                data : data,
+                type:"POST",
+                beforeSend:function (res){
+                },
+                success: function (res){
+                    Swal.fire(
+                        'New!',
+                        'supplier has been update.',
+                        'success'
+                    );
+                    setTimeout(function (){
+                        location.reload();
+                    },2000)
+                },
+                error: function (){
+                    Swal.fire(
+                        'Edit!',
+                        'supplier has not been edit.',
+                        'error'
+                    );
+                    location.reload()
+                }
+
+            });
+
+
+        }
+
+        function submitAddRecord(){
+            var data = $('#form_add').serialize();
+            $.ajax({
+                url:"/scorepro/admin/supplier/store",
+                type:"POST",
+                data:data,
+                beforeSend: function() {
+                },
+                success: function(data){
+                    location.reload()
+                },
+                error: function (res) {
+                    Swal.fire(
+                        'New!',
+                        'supplier has been Record.',
+                        'success'
+                    );
+                    setTimeout(function (){
+                        location.reload();
+                    },30000)
+                }
+                })
+        }
+        //Datatable register
+
+        $('#kt_table').DataTable({
+            dom: 'Bfrtip',
+            processing: true,
+            serverSide: true,
+            lengthChange: true,
+            // fixedColumns: true,
+            autoWidth: false,
+            scrollX: true,
+            // scrollY: '50vh',
+            scrollCollapse: true,
+            fixedHeader: {
+                "header": false,
+                "footer": false
+            },
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            ajax: '/scorepro/admin/supplier/datatable',
+            columns: [
+                // {data: 'experian_id', name: 'experian_id'},
+                {data: 'key', name: 'key'},
+                {data: 'value', name: 'value'},
+                {data: 'description', name: 'description'},
+                {data: 'score_generators', name: 'score_generators'},
+                {data: 'action', orderable: false, searchable: false, className: 'dt-center'},
+            ],
+        });
+
+
+        //Delete function Delete
+        function Delete(id) {
+            data = new FormData();
+            data.append('csrf', $('meta[name="csrf-token"]').attr('content'));
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.value) {
+                    url = '/scorepro/admin/supplier/delete/' + id
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        beforeSend: function() {
+                        },
+                        success: function (res) {
+                            Swal.fire(
+                                'Deleted!',
+                                'telcoscore has been deleted.',
+                                'success'
+                            );
+                            setTimeout(function (){
+                                location.reload();
+                            },1000)
+                        },
+                        error: function (res) {
+                            Swal.fire({
+                                type: 'warning',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            });
+                        }
+                    })
+                }
+            });
+        }
+
+
+        function Copy(){
+            $(".buttons-copy").trigger("click");
+        }
+        function Csv(){
+            $(".buttons-csv").trigger("click");
+        }
+        function Excel(){
+            $(".buttons-excel").trigger("click");
+        }
+        function Pdf(){
+            $(".buttons-pdf").trigger("click");
+        }
+        function Print(){
+            $(".buttons-print").trigger("click");
+        }
+
+        $(".dt-buttons").hide()
+
+
+    </script>
+{{end}}

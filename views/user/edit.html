@@ -1,0 +1,237 @@
+{{define "content"}}
+    <div class="row">
+        <div class="col-lg-12">
+            <!--begin::Portlet-->
+            <div class="kt-portlet">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            User Edit
+                        </h3>
+                    </div>
+                </div>
+
+                <!--begin::Form-->
+                <form class="kt-form" method="POST" action="/scorepro/admin/users/update/{{.data.UserID}}" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf" value="{{ getCsrfToken .ctx }}">
+                    <div class="kt-portlet__body">
+                        {{if .flashMessage}}
+                            {{if (eq .flashMessage.Type "error")}}
+                                <div class="alert alert-danger alert-dismissible" role="alert">
+                                    <div class="alert-text">{{.flashMessage.Message}}</div>
+                                    <div class="alert-close">
+                                        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                                    </div>
+                                </div>
+                            {{end}}
+                        {{end}}
+                        <div class="kt-section kt-section--first">
+                            <input type="hidden" id="id" value="{{.data.UserID}}">
+                            <div class="form-group">
+                                <label>Nik:</label>
+                                <input type="text" name="nik" class="form-control" placeholder="Enter Nik"
+                                       value="{{.data.Nik}}">
+                                <span class="form-text text-muted">Please enter your Nik</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Name:</label>
+                                <input type="text" name="name" class="form-control" placeholder="Enter Name"
+                                       value="{{.data.Name}}">
+                                <span class="form-text text-muted">Please enter your Name</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Email address:</label>
+                                <input id="email" type="email" name="email" class="form-control" placeholder="Enter email"
+                                       value="{{.data.Email}}">
+                                <span class="form-text text-muted">We'll never share your email with anyone else</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Password:</label>
+                                <input type="password" id="password" name="password" class="form-control"
+                                       placeholder="Enter Password">
+                                <span class="form-text text-muted">Please enter your password</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm Password:</label>
+                                <input class="form-control" type="password" placeholder="Confirm Password"
+                                       name="rpassword">
+                                <span class="form-text text-muted">Please enter your confirm password</span>
+                            </div>
+                            <input type="text" value="{{.data.IsActive}}" name="is_active_val" hidden>
+
+                            <div class="form-group">
+                                <label>Is Active: </label>
+                                <span class="kt-switch kt-switch--outline kt-switch--icon kt-switch--warning">
+                                    <label>
+                                        <input type="checkbox" {{.data.IsActive}} name="is_active">
+                                        <span></span>
+                                    </label>
+                                </span>
+
+                                <span class="form-text text-muted">Please enter your Is Active</span>
+                            </div>
+                            <input type="text" value="{{.data.TypeUser}}" name="type_user_val" hidden >
+
+                            <div class="form-group">
+                                <label>User Type:</label>
+                                <div class="form-group row">
+                                    <div class=" col-lg-4 col-md-9 col-sm-12">
+                                        <select class="form-control kt-select2" id="kt_select2_1" name="user_role_id">
+                                            <option value="1">Super Admin</option>
+                                            <option value="2">Admin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__foot">
+                        <div class="kt-form__actions">
+                            <button type="submit" class="btn btn-primary btn-brand btn-pill btn-elevate"
+                                    id="kt_submit_update">Submit
+                            </button>
+                            <a href="/scorepro/admin/users/list" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+
+                <!--end::Form-->
+            </div>
+
+            <!--end::Portlet-->
+        </div>
+    </div>
+{{end}}
+
+{{define "scripts"}}
+    <script type="text/javascript">
+
+        if ($('#is_active_val').val() == "checked"){
+            $('#is_active').prop("checked",true)
+            $('input[name="is_active"]').val(1)
+        }else {
+            $('#is_active').prop("checked",false)
+            $('input[name="is_active"]').val(0)
+        }
+
+
+        $('#kt_select2_1, #kt_select2_1_validate').select2({
+            placeholder: "Select a state"
+        });
+        typeUser = $('input[name="type_user_val"]').val()
+        if (typeUser == 2){
+            $("#kt_select2_1").val(2).trigger("change");
+        }else {
+            $("#kt_select2_1").val(1).trigger("change");
+        }
+
+
+        // function replaceImage() {
+        //     var i = document.getElementById("image_holder").style.backgroundImage;
+        //     if (i != "") {
+        //         var strImage = i.split(/"/)[1];
+        //         var replace = strImage.replace(/^data:image\/[a-z]+;base64,/, "");
+        //         $("#img_temp").val(replace)
+        //     }
+        // }
+
+        $('#kt_submit_update').click(function (e) {
+            e.preventDefault();
+            var btn = $(this);
+            var form = $(this).closest('form');
+
+
+            form.validate({
+                rules: {
+                    nik: {
+                        required: true
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    password_confirm: {
+                        minlength: 5,
+                        equalTo: "#password"
+                    },
+                    is_multi_branch: {
+                        required: true
+                    },
+                    type_user: {
+                        required: true
+                    },
+                }
+            });
+
+            if (!form.valid()) {
+                return;
+            }
+
+            // replaceImage();
+
+            swal.fire({
+                title: 'Please Wait..!',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                onOpen: () => {
+                    swal.showLoading()
+                }
+            });
+            form.ajaxSubmit({
+                type: 'POST',
+                url: '/scorepro/admin/register/update/{{.data.UserID}}',
+                beforeSend: function (req) {
+                    var csrfToken = $("input[name=csrf_token]").val();
+                    req.setRequestHeader("X-CSRF-TOKEN", csrfToken)
+                },
+                success: function (response, status, xhr, $form) {
+                    // similate 2s delay
+                    swal.hideLoading();
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Success',
+                        icon: 'success',
+                        text: "Data berhasil di update",
+                    });
+                    window.location.href = "/scorepro/admin/register";
+                },
+                error: function (response, status, xhr, $form) {
+                    swal.hideLoading();
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Error',
+                        icon: 'error',
+                        text: response.responseJSON.message,
+                    });
+                }
+            });
+        });
+
+
+        // $('#roles').select2({
+        //     placeholder: "Select Role",
+        //     allowClear: true,
+        //     multiple: false,
+        //     ajax: {
+        //         url: '/scorepro/admin/roles/select2',
+        //         datatype: 'json',
+        //         delay: 250,
+        //         processResults: function (data) {
+        //             return {
+        //                 results: $.map(data, function (item) {
+        //                     return {
+        //                         text: item.text,
+        //                         id: item.id
+        //                     }
+        //                 })
+        //             };
+        //         }
+        //     }
+        // });
+        {{/*$("#roles").select2("trigger", "select", {*/}}
+        {{/*    data: {id:{{.data.Role.ID}}, text: {{.data.Role.RoleName}} }*/}}
+        {{/*});*/}}
+    </script>
+{{end}}
+

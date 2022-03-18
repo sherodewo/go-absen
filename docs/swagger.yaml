@@ -1,0 +1,337 @@
+basePath: /api/v1
+definitions:
+  controllers.ApiResponse:
+    properties:
+      data:
+        type: object
+      errors:
+        type: object
+      messages:
+        type: string
+      server_time:
+        type: string
+    type: object
+  dto.PickleDto:
+    properties:
+      ANGS_:
+        type: integer
+      Age_:
+        type: integer
+      CatID_:
+        type: string
+      DP_:
+        type: integer
+      Dpnt_:
+        type: integer
+      Educ_:
+        type: string
+      Gnr_:
+        type: string
+      Hmsts_:
+        type: string
+      IIR_:
+        type: integer
+      Inc_:
+        type: integer
+      Jobex_:
+        type: integer
+      Lnstay_:
+        type: integer
+      Mrtl_:
+        type: string
+      NTF_:
+        type: integer
+      OrderID:
+        type: string
+      Prof_:
+        type: string
+      SpsInc_:
+        type: integer
+      Tnr_:
+        type: integer
+      VarInc_:
+        type: integer
+      Zip_:
+        type: string
+    required:
+    - ANGS_
+    - Age_
+    - CatID_
+    - DP_
+    - Dpnt_
+    - Educ_
+    - Gnr_
+    - Hmsts_
+    - IIR_
+    - Inc_
+    - Jobex_
+    - Lnstay_
+    - Mrtl_
+    - NTF_
+    - OrderID
+    - Prof_
+    - SpsInc_
+    - Tnr_
+    - VarInc_
+    - Zip_
+    type: object
+  dto.PickleLimitDto:
+    properties:
+      Dep_v:
+        type: number
+      Education_v:
+        type: string
+      Gender_v:
+        type: string
+      Homests_v:
+        type: string
+      INCMJT_v:
+        type: number
+      JobExp_v:
+        type: number
+      LenOfStay_v:
+        type: number
+      MaritalSts_v:
+        type: string
+      OrderID:
+        type: string
+      Profession_v:
+        type: string
+      ZIP3_v:
+        type: string
+      age_v:
+        type: number
+    type: object
+  models.CreditScoreResp:
+    properties:
+      ProspectID:
+        type: string
+      experian_id:
+        type: string
+      phone_number:
+        type: string
+      result:
+        type: string
+      score:
+        type: number
+      status:
+        type: string
+    type: object
+  scorepro.PickleModelingDto:
+    properties:
+      cb_found:
+        type: boolean
+      data:
+        type: object
+      journey:
+        type: string
+      phone_number:
+        type: string
+      prospect_id:
+        type: string
+      requestor_id:
+        type: string
+      score_generator_id:
+        type: string
+      status_konsumen:
+        type: string
+      supplier_id:
+        type: string
+    required:
+    - cb_found
+    - journey
+    - phone_number
+    - prospect_id
+    - requestor_id
+    - score_generator_id
+    type: object
+  scorepro.ScoreproResponse:
+    properties:
+      phone_number:
+        type: string
+      prospect_id:
+        type: string
+      result:
+        type: string
+      score:
+        type: number
+      score_result:
+        type: string
+      status:
+        type: string
+    type: object
+  scorepro.WgScoreproResponse:
+    properties:
+      max_dsr:
+        type: integer
+      phone_number:
+        type: string
+      prospect_id:
+        type: string
+      result:
+        type: string
+      score:
+        type: number
+      score_brand:
+        type: string
+      score_result:
+        type: string
+      status:
+        type: string
+    type: object
+host: localhost:9105
+info:
+  contact:
+    email: support@kreditplus.com
+    name: Kredit Plus
+    url: https://kreditplus.com
+paths:
+  /score/credit/{phoneNumber}:
+    post:
+      description: Los Scorepro
+      parameters:
+      - description: scoring type by scs
+        in: query
+        name: scs
+        type: string
+      - description: Mobile Phone
+        in: path
+        name: phoneNumber
+        required: true
+        type: string
+      - description: Body payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PickleDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.CreditScoreResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ApiResponse'
+      tags:
+      - SCORE PRO
+  /score/credit/{phoneNumber}/limit:
+    post:
+      description: Los Scorepro LIMIT
+      parameters:
+      - description: Mobile Phone
+        in: path
+        name: phoneNumber
+        required: true
+        type: string
+      - description: Body payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PickleLimitDto'
+      - description: scoring type by scs
+        in: query
+        name: scs
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.CreditScoreResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ApiResponse'
+      tags:
+      - SCORE PRO
+  /scorepro/kmb/idx:
+    post:
+      description: Get Scoring Pickle & Experian
+      parameters:
+      - description: Body payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/scorepro.PickleModelingDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/scorepro.ScoreproResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ApiResponse'
+      summary: Telcoscore KMB Scoring
+      tags:
+      - TELCOSCORE
+  /scorepro/wg/idx:
+    post:
+      description: Get Scoring Pickle & Experian
+      parameters:
+      - description: Body payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/scorepro.PickleModelingDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/scorepro.WgScoreproResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ApiResponse'
+      summary: Telcoscore WG Scoring
+      tags:
+      - TELCOSCORE
+swagger: "2.0"
